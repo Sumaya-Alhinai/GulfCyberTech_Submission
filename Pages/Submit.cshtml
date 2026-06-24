@@ -1,0 +1,79 @@
+﻿@page
+@model VehicleSubmissionApp.Pages.SubmitModel
+
+<div class="container mt-4" style="max-width:600px">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-4">Add New Record</h4>
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input asp-for="Submission.Name" class="form-control" placeholder="Enter name" />
+                    <span asp-validation-for="Submission.Name" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Brand</label>
+                    <select asp-for="Submission.BrandId" asp-items="Model.Brands" class="form-select" id="brandSelect">
+                        <option value="">Select Brand</option>
+                    </select>
+                    <span asp-validation-for="Submission.BrandId" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Model</label>
+                    <select asp-for="Submission.ModelId" class="form-select" id="modelSelect">
+                        <option value="">Select Model</option>
+                    </select>
+                    <span asp-validation-for="Submission.ModelId" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Civil ID</label>
+                    <input asp-for="Submission.CivilId" class="form-control" placeholder="Enter Civil ID" />
+                    <span asp-validation-for="Submission.CivilId" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input asp-for="Submission.Phone" class="form-control" placeholder="Enter phone number" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input asp-for="Submission.Email" class="form-control" placeholder="Enter email address" />
+                    <span asp-validation-for="Submission.Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Upload Civil ID</label>
+                    <input type="file" name="CivilIdImage" class="form-control" accept=".jpg,.jpeg,.png" />
+                    <span class="text-danger">
+                        @Html.ValidationMessage("CivilIdImage")
+                    </span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('brandSelect').addEventListener('change', function () {
+            var brandId = this.value;
+            var modelSelect = document.getElementById('modelSelect');
+            modelSelect.innerHTML = '<option value="">Select Model</option>';
+            if (brandId) {
+                fetch('?handler=Models&brandId=' + brandId)
+                    .then(r => r.json())
+                    .then(data => {
+                        data.forEach(m => {
+                            var opt = document.createElement('option');
+                            opt.value = m.id;
+                            opt.text = m.modelName;
+                            modelSelect.appendChild(opt);
+                        });
+                    });
+            }
+        });
+    </script>
+}
